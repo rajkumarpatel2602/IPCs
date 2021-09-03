@@ -81,4 +81,42 @@ and store in database.
 - write()
 - read() --> blocking
 
-*  
+* Pairing of APIs
+- read <-> write
+- sendto <-> recvfrom
+- sendmsg <-> recvmsg
+- connect <-> accept
+- Non-blocking <-> Blocking
+
+* Multiplexing
+- Server design which allows to serve multiple clients at a time.
+- select() helps to monitor all clients activities at the same time.
+
+* Select system call
+- Allows to monitor new CIR from a new client and can also monitor multiple connected clients and which clients has sent data.
+- Server process maintains Master socket as well as data sockets/communication FDs.
+- fd_set datastructure helps to maitain all these fild des.
+- e.g. fd_set has M, C1, C2.
+- select() operates on fd_set.
+- select() is the blocking system call.
+-- Unblocks when CIR received
+-- Unblocks when data request from existing client comes. server need to identified the client handle due to which it has unblocked.
+
+* fd_set data structure
+- C provides data structures which is the collection(set) of file descriptors.
+
+* Multiplexed Server workflow
+- server boots up
+- create a master socket using socket()
+- store master socket in fd_set data structures. i.e.fd_Set readfs
+- invoke select(fd_set) and gets blocked.
+- as soon as CIR received, select gets unblocked and as its a CIR master fd gets activated. server process hence knows that its a CIR.
+- accept() gets called and data socket or communication socket is returned.
+- server adds this fd in fd_set datastructure and gtets block on select.
+- if SR is arrived, then selects gets unblcoked. master fd is not activated, instead comm_fd will get activated.
+- Server identifies the comm_fd or data_fd or client handle and serve the client.
+- If server closes the client connection then remvoe entry from readfs or fd_set data structure.
+- Get block on select(updated fd_set)
+
+
+
