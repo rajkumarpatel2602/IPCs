@@ -50,4 +50,35 @@ and store in database.
 - OS helps to divert SRM to client handles and CIR to Master socket.
 
 * Accept system call.
-- 
+- Whenver server receives CIR from client, next step is to accept() to establish bidirectional communication.
+- Which returns client handle/data handle for data exchange.
+- Only used in TCP (connection oriented communication rather than connection-less communication.)
+
+* UNIX Domain Sockets
+- Same machine processes uses this type of sockets.
+- Server and Client both are on the same machine.
+- STREAM based or DATAGRAM based communciation can take place.
+
+* Stream based communication
+- Same as flow of water. copying or moving one file from one location to another location.
+- e.g. flow of water and continuous flow of bytes.
+
+* Datagram based communication
+- Small units of data moved from source to destination process. data is sent as a chunk.
+
+* Server process UNIX based socket communication.
+- socket()
+- bind()
+- listen()
+- accept() -- blocking call --> callback* 
+- read() --> callback*
+- write()
+- close()
+
+* Client workflow
+- socket()
+- connect()
+- write()
+- read() --> blocking
+
+*  
