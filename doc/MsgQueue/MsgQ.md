@@ -133,3 +133,54 @@ After updating shared memory, publisher needs to notify all the subscribers.
 once these subscribers get notified, they can read the shared memory and may update their data structures if necessary.
 these small notifications are generally sent using msgQ and unix sockets.
 hence, shared memory needs to be backed by other IPCs.
+
+int
+shm_open(char *name_sm, file_flags, file permissions);
+returns shared memory file descriptor.
+
+by default shared memory of zero bytes would be created.
+
+resizing of shared memory.
+ftruncate(int shm_fd, size_t size);
+to resize the created shared memory. hence, it should always be called after shm_open()
+
+Mmap api.
+#include<sys/mman.h>
+void*
+mmap(
+void *addr, // mapping starting in process VAS. e.g. A from A-A' . Ideally it should be passed as NULL and let OS decide.
+size_t length, // lenght of the shared memory object which needs mapping
+int prot, // PROT_READ | PROT_WRITE . Flags will decide operation type in this mapped region.should match with shm_open
+int flags, // MAP_SHARED this will help to make the updates to shared memory visible to all processes immediately.
+int fd, // shared memory object or fd.
+off_t offset // offset from the starting point of the kernel shared memory resource. we should generally pass zero. maps the shared memory object right from the beginning.
+);
+On success returns the pointer to the VAS of the process, where the shared memory region is mapped.
+on failure MAP_FAILED, which is (void *)-1, is returned and error number is set.
+
+Un-mapping api
+int
+munmap(
+void *addr,    // pointer to the starting address of the process mmap VAS. return of mmap.
+size_t lenght  // length of mapping which we want to unmmap. should be same as shared memory size. 
+);
+used to destroy the mapping between process VAS and kernel shared memoroy.
+Important : it doesn't destroy the shared memory in the kernel space. it only unmap the mapping.
+
+before munmap() vas = heap + stack + data + mmap
+after mmap() vas  = heap + stack + data
+
+unlink the shared memory // used so that we don't run out of memory.
+shm_unlink(
+cont char * name; // name of the shared memory.
+)
+de-associate the shared memory with its name.
+equivalent to no shared memory exist with same name anymore. name shall be available with new instance of shared memory.
+returns -1 on failure and 0 on success.
+
+closing of the shared memory
+int
+close(int shm_id);
+decrease the reference count of the shared memory object maintained in the kernel space
+if count reaches to zero then shared memory resource will be reclaimed by the kernel. in some systems it reclaims on reboot.
+returns -1 on error or success.
