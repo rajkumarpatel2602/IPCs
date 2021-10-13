@@ -102,7 +102,7 @@ select() is the blocking system call.
  Unblocks when CIR received
  Unblocks when data request from existing client comes. server need to identified the client handle due to which it has unblocked.
 
-* fd_set data structure
+* *fd_set* data structure
 C provides data structures which is the collection(set) of file descriptors.
 
 * Multiplexed Server workflow
