@@ -18,7 +18,7 @@ e.g. OS sends SIGTERM to process, and process dies as this is the default action
 e.g. printing 'GoodBye!' in signal handler routine before terminating on reception of SIGTERM from OS.
 3. Process can ignore the signal.
 
-* Signal handler routine.
+* *Signal handler routine*.
 A special function which is supposed to be registered against the signal type.
 It executes at the highest priority, preempting the normal excution flow.
 
